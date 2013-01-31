@@ -142,7 +142,7 @@ class RequestsKeywords(object):
         return resp
 
 
-    def delete(self, alias, uri, data=(), headers=None):
+    def delete(self, alias, uri, data=None, headers=None):
         """ Send a DELETE request on the session object found using the given `alias`
 
         `alias` that will be used to identify the Session object in the cache
@@ -154,7 +154,10 @@ class RequestsKeywords(object):
         """
 
         session = self._cache.switch(alias)
-        resp = session.delete("%s?%s" %(uri, urlencode(data)), headers=headers)
+        if type(data) is dict:
+            resp = session.delete(uri, data=urlencode(data), headers=headers)
+        else:
+            resp = session.delete(uri, data=data, headers=headers)
 
         # store the last response object
         session.last_resp = resp
